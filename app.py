@@ -34,5 +34,10 @@ def upload_file():
 if __name__ == '__main__':
     app.run(debug=True)
     print(f"Saving file: {file.filename}")
+<<<<<<< HEAD
 #hahahaa ankit is gay bolo juba keshri ankit in not gay he is lesbian
 # ankit gay 
+=======
+#sab ke sab bhadwe except soupatri
+>>>>>>> 3bc330732191eca6cb5f9ab133ef3c7aaea7f6e2
+# hahaha
