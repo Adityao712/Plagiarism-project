@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Plagiarism Upload</title>
+    <!-- Flask best practice for linking static CSS -->
+
+    <link rel="stylesheet" type="text/css" href="../static/plagiarism.css">
+
+
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header>
+        <div class="container nav">
+            <h1 class="logo">🔒 AI Plagiarism Protection</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Upload</a></li>
+                    <li><a href="#" class="signup-btn">Signup</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Protect Your Work. Detect Plagiarism Intelligently.</h2>
+            <p>Use advanced AI to detect and prevent plagiarism in your documents.</p>
+            <a href="#" class="btn">Try Now</a>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <div class="container">
+        <h1>Upload Your Content</h1>
+        <form id="upload-form">
+            <input type="file" name="file" id="file" required><br><br>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required><br><br>
+            <button type="submit">Upload</button>
+        </form>
+        <div id="response"></div>
+    </div>
+
+    <!-- Features (placeholder for now) -->
+    <section class="features">
+        <div class="container feature-flex">
+            <div class="feature">
+                <div class="icon">📄</div>
+                <h3>AI Detection</h3>
+                <p>Advanced models to detect similarities and protect your work.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🔍</div>
+                <h3>Deep Scanning</h3>
+                <p>Search across the web and documents with accuracy.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">📧</div>
+                <h3>Email Reports</h3>
+                <p>Get detailed plagiarism reports in your inbox.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AI Copyright Protection. All rights reserved.</p>
+            <a href="#">Privacy Policy</a> |
+            <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+
+    <!-- JS for Upload -->
+    <script>
+        const form = document.getElementById('upload-form');
+        const responseDiv = document.getElementById('response');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const file = document.getElementById('file').files[0];
+            const email = document.getElementById('email').value;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('email', email);
+
+            try {
+                const res = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    throw new Error('Server error: ' + res.status);
+                }
+
+                const data = await res.json();
+                responseDiv.innerText = data.message;
+            } catch (err) {
+                console.error(err);
+                responseDiv.innerText = '❌ Upload failed: ' + err.message;
+            }
+        }
+    </script>
+</body>
+
+</html>
