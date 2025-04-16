@@ -35,3 +35,4 @@ if __name__ == '__main__':
     app.run(debug=True)
     print(f"Saving file: {file.filename}")
 #hahahaa ankit is gay bolo juba keshri ankit in not gay he is lesbian
+# ankit gay 
