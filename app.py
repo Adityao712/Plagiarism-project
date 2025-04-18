@@ -37,7 +37,6 @@ init_db()
 @app.route('/')
 def index():
     return render_template('plagiarism.html')  # Make sure this is inside /templates
-
 # Upload route - handles file & email
 @app.route('/upload', methods=['POST'])
 def upload_file():

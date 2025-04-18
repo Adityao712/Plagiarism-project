@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign in</title>
+</head>
+<style>
+    body {
+        background-color: #0f0f0f;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        width: 90%;
+        max-width: 900px;
+        background: radial-gradient(circle, #112222 0%, #0f0f0f 100%);
+        border-radius: 16px;
+        box-shadow: 0 0 30px rgba(50, 245, 200, 0.1);
+        overflow: hidden;
+    }
+
+    /* Left Section */
+    .left {
+        flex: 1;
+        background-color: #101010;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-right: 1px solid #1e1e1e;
+    }
+
+    .left h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #32f5c8;
+    }
+
+    .left p {
+        font-size: 1rem;
+        color: #aaa;
+    }
+
+    /* Right Section */
+    .right {
+        flex: 1;
+        padding: 3rem;
+        background-color: #0f0f0f;
+    }
+
+    .right h2 {
+        color: #ffffff;
+        margin-bottom: 2rem;
+    }
+
+    /* Form Styling */
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #ccc;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #2d2d2d;
+        border-radius: 8px;
+        background-color: #1a1a1a;
+        color: #fff;
+        transition: border 0.3s ease;
+    }
+
+    input:focus {
+        border: 1px solid #32f5c8;
+        outline: none;
+    }
+
+    /* Form Options */
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .form-options label {
+        color: #ccc;
+    }
+
+    .form-options a {
+        color: #32f5c8;
+        text-decoration: none;
+    }
+
+    .form-options a:hover {
+        text-decoration: underline;
+    }
+
+    /* Button */
+    .btn {
+        padding: 0.75rem;
+        background-color: #32f5c8;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #29ccb1;
+    }
+
+    /* Signup Text */
+    .signup {
+        margin-top: 2rem;
+        text-align: center;
+        color: #aaa;
+    }
+
+    .signup a {
+        color: #32f5c8;
+        text-decoration: none;
+    }
+
+    .signup a:hover {
+        text-decoration: underline;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="left">
+          <h1>Welcome Back!</h1>
+          <p>Sign in to your account to continue.</p>
+        </div>
+        <div class="right">
+          <h2>Sign in</h2>
+          <form>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required />
+            </div>
+    
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" required />
+            </div>
+    
+            <div class="form-options">
+              <label><input type="checkbox" /> Remember me</label>
+              <a href="#">Forgot password?</a>
+            </div>
+    
+            <button type="submit" class="btn">Sign In</button>
+    
+            <div class="signup">
+              Don't have an account? <a href="#">Sign up</a>
+            </div>
+          </form>
+        </div>
+      </div>
+</body>
+</html>
