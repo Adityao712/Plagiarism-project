@@ -33,13 +33,21 @@
           <div class="hero-text">
             <h2>Protect Your Work. Detect Plagiarism Intelligently.</h2>
             <p>Use advanced AI to detect and prevent plagiarism in your documents.</p>
-            <a href="upload.html" class="btn">Try Now</a>
+            <a href="#" class="btn">Try Now</a>
           </div>
         </div>
     </section>
       
-        <!-- The uploaded image -->
-
+    <!-- The uploaded image -->
+    <div class="container">
+        <h1>Upload Your Content</h1>
+        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" required><br><br>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required><br><br>
+            <button type="submit">Upload</button>
+        </form>
+        <div id="response" style="margin-top: 20px; font-weight: bold;"></div>
+    </div>
 
     <!-- Features Section -->
     <section class="features">

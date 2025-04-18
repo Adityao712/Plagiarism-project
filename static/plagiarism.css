@@ -99,6 +99,60 @@
     box-shadow: rgba(90, 89, 89, 0.16) 0px 3px 6px, rgba(99, 99, 99, 0.23) 0px 3px 6px;
   }
   
+  /* uploadpage */
+
+  .container form {
+    max-width: 1200px;
+    margin: 60px auto;
+    background-color: black;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(56, 254, 208, 0.037);
+    border-radius: 10px;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .container h1 {
+    margin-bottom: 20px;
+    color: #32f5c8;
+  }
+  
+  input[type="file"],
+  input[type="email"] {
+    width: 90%;
+    padding: 12px;
+    margin: 12px 0;
+    background-color: #0d1117;
+    color: white;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+  }
+  
+  input::placeholder {
+    color: #888;
+  }
+  
+  button {
+    padding: 12px 24px;
+    background: #32f5c8;
+    color: #0d1117;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  button:hover {
+    background-color:#32f5c8;
+    box-shadow: rgba(90, 89, 89, 0.16) 0px 3px 6px, rgba(99, 99, 99, 0.23) 0px 3px 6px;
+  }
+  
+  #response {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #00bcd4;
+  }
   /* Features Section */
   .features {
     padding: 4rem 0;
@@ -160,4 +214,7 @@
   footer a:hover {
     text-decoration: underline;
   }
+
+
+  
  
