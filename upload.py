@@ -1,43 +1,108 @@
 from flask import Blueprint, request, jsonify
-from firebase_service import db
-from hashing_service import generate_file_hash
-from plagiarism_check import check_text_plagiarism
+from hashing_service import get_image_hash
 import os
+import sqlite3
+from PIL import Image
+import imagehash
+from werkzeug.utils import secure_filename
 
 upload_blueprint = Blueprint('upload', __name__)
+
 UPLOAD_FOLDER = 'uploads'
+NEW_SUBMISSIONS_FOLDER = 'new_submissions'
+DB_PATH = 'uploads.db'
+SIMILARITY_THRESHOLD = 0.9  # 90%
+
+# Create folders if not exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(NEW_SUBMISSIONS_FOLDER, exist_ok=True)
+
+def compute_similarity(hash1, hash2):
+    max_distance = len(bin(int(hash1))) - 2
+    return 1 - (hash1 - hash2) / max_distance
+
+def init_image_hash_table():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS image_hashes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    filename TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    hash TEXT NOT NULL
+                )''')
+    conn.commit()
+    conn.close()
+
+init_image_hash_table()
 
 @upload_blueprint.route('/upload', methods=['POST'])
+@upload_blueprint.route('/upload', methods=['POST'])
 def upload_file():
-    file = request.files['file']
-    user_email = request.form.get('email')
+    try:
+        if 'file' not in request.files or 'email' not in request.form:
+            return jsonify({'message': '❌ File or email missing'}), 400
 
-    # Save temporarily
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(file_path)
+        file = request.files['file']
+        email = request.form.get('email')
+        filename = secure_filename(file.filename)
 
-    file_hash = generate_file_hash(file_path)
+        if filename == '':
+            return jsonify({'message': '❌ No file selected'}), 400
 
-    # Check if file already exists in Firebase
-    existing = db.collection('files').where('hash', '==', file_hash).stream()
-    if any(existing):
-        return jsonify({"message": "❗ Already exists (possible plagiarism)."})
+        temp_path = os.path.join('temp', filename)
+        os.makedirs('temp', exist_ok=True)
+        file.save(temp_path)
 
-    # TEXT plagiarism check (optional for now)
-    if file.filename.endswith('.txt'):
-        with open(file_path, 'r') as f:
-            text_data = f.read()
-        plagiarism_result = check_text_plagiarism(text_data)
-    else:
-        plagiarism_result = {}
+        print(f"[INFO] File saved to temp: {temp_path}")
 
-    # Store in Firebase
-    db.collection('files').add({
-        'email': user_email,
-        'filename': file.filename,
-        'hash': file_hash,
-        'plagiarism_result': plagiarism_result
-    })
+        # Load and hash
+        image = Image.open(temp_path)
+        new_hash = imagehash.phash(image)
 
-    os.remove(file_path)
-    return jsonify({"message": "✅ File saved & copyright claimed!", "plagiarism_result": plagiarism_result})
+        print(f"[INFO] Generated hash: {new_hash}")
+
+        # Load existing hashes from DB
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT filename, hash FROM image_hashes")
+        rows = c.fetchall()
+        conn.close()
+
+        matches = []
+        for existing_filename, hash_str in rows:
+            existing_hash = imagehash.hex_to_hash(hash_str)
+            similarity = compute_similarity(new_hash, existing_hash)
+            if similarity >= SIMILARITY_THRESHOLD:
+                matches.append({
+                    "filename": existing_filename,
+                    "similarity": round(similarity * 100, 2)
+                })
+
+        if matches:
+            os.remove(temp_path)
+            print("[INFO] Match found:", matches)
+            return jsonify({
+                "message": "🛑 Similar image(s) found",
+                "matches": matches
+            })
+
+        # No match – save and record hash
+        new_path = os.path.join(NEW_SUBMISSIONS_FOLDER, filename)
+        os.rename(temp_path, new_path)
+
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("INSERT INTO image_hashes (filename, email, hash) VALUES (?, ?, ?)",
+                  (filename, email, str(new_hash)))
+        conn.commit()
+        conn.close()
+
+        print(f"[INFO] Stored new image at: {new_path}")
+        return jsonify({
+            "message": "✅ No similar image found. New image saved.",
+            "location": new_path
+        })
+
+    except Exception as e:
+        print("❌ Upload error:", str(e))
+        return jsonify({'message': f'❌ Server error: {str(e)}'}), 500

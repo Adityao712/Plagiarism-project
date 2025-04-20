@@ -4,42 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Plagiarism Upload</title>
-    <!-- Proper CSS linking via Flask -->
     <link rel="stylesheet" href="{{ url_for('static', filename='plagiarism.css') }}">
-    
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Navbar -->
     <header>
         <div class="container nav">
-            <h1 class="logo">🔒 AI Plagiarism Protection</h1>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="PlagOne Logo">
+                PlagOne
+            </div>
             <nav>
                 <ul>
                     <li><a href="#">Home</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Features</a></li>
-                    <li><a href="#">Upload</a></li>
-                    <li><a href="signup.html" class="signup-btn">Signup</a></li>
+                    <li><a href="#upload-section">Upload</a></li>
+                    <li><a href="{{ url_for('signup') }}" class="signup-btn">Signup</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    
     <section class="hero">
         <div class="hero-content">
-          <div class="hero-text">
-            <h2>Protect Your Work. Detect Plagiarism Intelligently.</h2>
-            <p>Use advanced AI to detect and prevent plagiarism in your documents.</p>
-            <a href="#" class="btn">Try Now</a>
-          </div>
+            <div class="hero-text">
+                <h2>Protect Your Work. Detect Plagiarism Intelligently.</h2>
+                <p>Use advanced AI to detect and prevent plagiarism in your documents.</p>
+            </div>
         </div>
     </section>
-      
-    <!-- The uploaded image -->
-    <div class="container">
+
+    <!-- Upload Section -->
+    <div class="container" id="upload-section">
         <h1>Upload Your Content</h1>
         <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
             <input type="file" name="file" id="file" required><br><br>
@@ -73,13 +90,11 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <p>&copy; 2025 AI Copyright Protection. All rights reserved.</p>
+            <p>&copy; 2025 PlagOne. All rights reserved.</p>
             <a href="#">Privacy Policy</a> |
             <a href="#">Terms of Service</a>
         </div>
     </footer>
-    
-    
 
     <!-- Upload JS -->
     <script>
@@ -113,9 +128,7 @@
                 responseDiv.innerText = '❌ Upload failed: ' + err.message;
             }
         });
-    </script> 
-   
-
+    </script>
 </body>
 
 </html>
