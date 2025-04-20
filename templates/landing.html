@@ -1,14 +1,15 @@
 <!-- templates/landing.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Welcome to AI Plagiarism Protection</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
 </head>
 <style>
-    /* Reset and base styles */
-body {
+  /* Reset and base styles */
+  body {
     margin: 0;
     padding: 0;
     /* background-color: #0d0d0d; */
@@ -21,39 +22,39 @@ body {
     min-height: 100vh;
     flex-direction: column;
     text-align: center;
-}
+  }
 
-/* Landing content */
-.landing-container {
+  /* Landing content */
+  .landing-container {
     max-width: 500px;
     padding: 20px;
-}
+  }
 
-h1 {
+  h1 {
     font-size: 2.5rem;
     font-weight: bold;
     line-height: 1.3;
     margin-bottom: 10px;
-}
+  }
 
-.highlight {
+  .highlight {
     color: #00f2a6;
-}
+  }
 
-p {
+  p {
     color: #bdbdbd;
     font-size: 1.1rem;
     margin-bottom: 30px;
-}
+  }
 
-/* Buttons */
-.buttons {
+  /* Buttons */
+  .buttons {
     display: flex;
     justify-content: center;
     gap: 15px;
-}
+  }
 
-.btn {
+  .btn {
     background-color: #00f2a6;
     color: #000;
     border: none;
@@ -64,64 +65,66 @@ p {
     text-decoration: none;
     transition: 0.3s;
     box-shadow: 0 0 10px #00f2a660;
-}
+  }
 
-.btn:hover {
+  .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 15px #00f2a699;
-}
+  }
 
-.btn.outline {
+  .btn.outline {
     background-color: transparent;
     color: #00f2a6;
     border: 2px solid #00f2a6;
-}
-/* Loader Styles */
-#loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #0f0f0f; /* match your theme */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.spinner {
-  border: 6px solid #222;
-  border-top: 6px solid #00ffc8;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
   }
-}
 
+  /* Loader Styles */
+  #loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0f0f0f;
+    /* match your theme */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
 
+  .spinner {
+    border: 6px solid #222;
+    border-top: 6px solid #00ffc8;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>
+
 <body>
-   <!-- Loader -->
-    <div id="loader-bar">
-        <div class="spinner"></div>
-    </div>
-  
+  <!-- Loader -->
+  <div id="loader-bar">
+    <div class="spinner"></div>
+  </div>
+
   <div class="landing-container">
     <div class="loader"></div>
     <h1>Welcome to <span class="highlight">AI Plagiarism Protection</span></h1>
     <p>Protect your documents with intelligent plagiarism detection.</p>
     <div class="buttons">
-      <a href="{{ url_for('plagiarism') }}" class="btn outline">Try Now</a>
-      <a href="{{ url_for('signup') }}" class="btn">Sign In</a>
+      <a href="{{ url_for('main') }}" class="btn outline">Try Now</a>
       <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
     </div>
+
   </div>
 </body>
+
 </html>

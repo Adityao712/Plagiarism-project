@@ -1,8 +1,6 @@
-import hashlib
+from PIL import Image
+import imagehash
 
-def generate_file_hash(file_path):
-    hasher = hashlib.sha256()
-    with open(file_path, 'rb') as f:
-        while chunk := f.read(8192):
-            hasher.update(chunk)
-    return hasher.hexdigest()
+def get_image_hash(image_path):
+    image = Image.open(image_path)
+    return imagehash.phash(image)
