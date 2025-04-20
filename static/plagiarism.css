@@ -191,10 +191,16 @@
   .feature h3 {
     margin-bottom: 0.5rem;
     font-size: 1.3rem;
+    color:  rgba(0, 255, 255, 0.6);
   }
   
   .feature p {
     color: #aaa;
+  }
+  .plain-link {
+    color: inherit;        /* Inherit color from parent */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer;    
   }
   
   /* Footer */
