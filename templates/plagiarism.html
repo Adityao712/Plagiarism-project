@@ -102,37 +102,51 @@
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('upload-form');
             const responseDiv = document.getElementById('response');
-
+    
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
+    
                 const file = document.getElementById('file').files[0];
                 const email = document.getElementById('email').value;
-
+    
                 if (!file || !email) {
-                    responseDiv.innerText = '❌ Please provide both file and email.';
+                    responseDiv.innerHTML = '<p style="color: red;">❌ Please provide both file and email.</p>';
                     return;
                 }
-
+    
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append('image', file);
                 formData.append('email', email);
-
+    
                 try {
-                    const res = await fetch('/upload', {
+                    const res = await fetch('/check_plagiarism', {
                         method: 'POST',
                         body: formData
                     });
-
-                    const data = await res.json();
-                    responseDiv.innerText = data.message;
+    
+                    const data = await res.json(); // Parse JSON response
+    
+                    let html = `<p>${data.message}</p>`;
+    
+                    // Show matched internet URLs if available
+                    if (data.status === 'web-duplicate' && data.matches) {
+                        html += '<h4>🔍 Similar images found on the web:</h4><ul>';
+                        data.matches.forEach(url => {
+                            html += `<li><a href="${url}" target="_blank">${url}</a></li>`;
+                        });
+                        html += '</ul>';
+                    }
+    
+                    responseDiv.innerHTML = html;
+    
                 } catch (err) {
                     console.error(err);
-                    responseDiv.innerText = '❌ Upload failed: ' + err.message;
+                    responseDiv.innerHTML = `<p style="color: red;">❌ Upload failed: ${err.message}</p>`;
                 }
             });
         });
     </script>
+    
 </body>
 
 </html>

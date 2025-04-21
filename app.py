@@ -5,66 +5,64 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from werkzeug.utils import secure_filename
-from hashing_service import get_image_hash  # Your image hashing function
+from hashing_service import get_image_hash  # Custom hashing function
+from reverse_search import search_similar_images
 
 app = Flask(__name__)
 
-# Upload folder setup
+# --- Config ---
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# --- Database Initialization ---
+EMAIL_SENDER = 'your_email@gmail.com'
+EMAIL_PASSWORD = 'your_app_password'
+
+# --- Initialize DB ---
 def init_db():
-    conn = sqlite3.connect('uploads.db')
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS uploads (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            filename TEXT NOT NULL,
-            email TEXT NOT NULL,
-            image_hash TEXT NOT NULL
-        )
-    ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    with sqlite3.connect('uploads.db') as conn:
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS uploads (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        filename TEXT NOT NULL,
+                        email TEXT NOT NULL,
+                        image_hash TEXT NOT NULL)''')
+
+        c.execute('''CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        email TEXT NOT NULL UNIQUE,
+                        password TEXT NOT NULL)''')
+        conn.commit()
 
 init_db()
 
 # --- Email Notification ---
-EMAIL_SENDER = 'your_email@gmail.com'
-EMAIL_PASSWORD = 'your_app_password'
-
 def send_notification(to_email, image_name):
     try:
         msg = MIMEMultipart()
         msg['From'] = EMAIL_SENDER
         msg['To'] = to_email
         msg['Subject'] = '🚨 Copyright Alert: Your Image Was Reuploaded'
-        body = f"""Hello,
+        body = f"""
+Hello,
 
-Your previously uploaded image '{image_name}' has been uploaded again.
+Your previously uploaded image '{image_name}' has been uploaded again by someone.
 
 Please review and take necessary actions.
 
-- AI Copyright Protection Team"""
+— AI Copyright Protection System
+"""
         msg.attach(MIMEText(body, 'plain'))
 
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(EMAIL_SENDER, EMAIL_PASSWORD)
             server.send_message(msg)
-        print("📬 Notification sent to", to_email)
+
+        print(f"📧 Email sent to: {to_email}")
 
     except Exception as e:
-        print("❌ Failed to send email:", e)
+        print(f"❌ Email sending failed: {e}")
 
 # --- Routes ---
 @app.route('/')
@@ -73,31 +71,22 @@ def landing():
 
 @app.route('/plagiarism')
 def plagiarism():
-    return render_template('plagiarism.html')  # Make sure this template exists
+    return render_template('plagiarism.html')
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
-        conn = sqlite3.connect('uploads.db')
-        c = conn.cursor()
-        c.execute('SELECT * FROM users WHERE email=? AND password=?', (email, password))
-        user = c.fetchone()
-        conn.close()
+        with sqlite3.connect('uploads.db') as conn:
+            c = conn.cursor()
+            c.execute('SELECT * FROM users WHERE email=? AND password=?', (email, password))
+            user = c.fetchone()
 
         if user:
-            return redirect(url_for('plagiarism'))  # Or 'main' if you have a separate dashboard
-        else:
-            return render_template('signin.html', error="Invalid email or password.")
-
+            return redirect(url_for('plagiarism'))
+        return render_template('signin.html', error="Invalid email or password.")
     return render_template('signin.html')
-
-@app.route('/analyse')
-def analyse():
-    return render_template('analyse.html')
-
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -109,61 +98,61 @@ def signup():
         if password != confirm_password:
             return render_template('signup.html', error="Passwords do not match!")
 
-        conn = sqlite3.connect('uploads.db')
-        c = conn.cursor()
-        c.execute('SELECT * FROM users WHERE email=?', (email,))
-        if c.fetchone():
-            return render_template('signup.html', error="Email already exists!")
-
-        c.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, password))
-        conn.commit()
-        conn.close()
+        with sqlite3.connect('uploads.db') as conn:
+            c = conn.cursor()
+            c.execute('SELECT * FROM users WHERE email=?', (email,))
+            if c.fetchone():
+                return render_template('signup.html', error="Email already exists!")
+            c.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, password))
+            conn.commit()
         return redirect(url_for('signin'))
 
     return render_template('signup.html')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    print("📩 Received request at /upload")
+@app.route('/analyse')
+def analyse():
+    return render_template('analyse.html')
 
-    if 'file' not in request.files or 'email' not in request.form:
-        return jsonify({'message': '❌ Missing file or email'}), 400
+@app.route('/check_plagiarism', methods=['POST'])
+def check_plagiarism():
+    print("📥 /check_plagiarism hit")
 
-    file = request.files['file']
+    if 'image' not in request.files or 'email' not in request.form:
+        return jsonify({'message': '❌ Missing image or email.'}), 400
+
+    file = request.files['image']
     email = request.form['email']
 
     if file.filename == '':
-        return jsonify({'message': '❌ No file selected'}), 400
+        return jsonify({'message': '❌ No file selected.'}), 400
 
     try:
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
 
-        img_hash = get_image_hash(filepath)
+        image_hash = get_image_hash(filepath)
 
-        conn = sqlite3.connect('uploads.db')
-        c = conn.cursor()
-        c.execute('SELECT * FROM uploads WHERE image_hash = ?', (img_hash,))
-        match = c.fetchone()
+        with sqlite3.connect('uploads.db') as conn:
+            c = conn.cursor()
+            c.execute('SELECT * FROM uploads WHERE image_hash=?', (image_hash,))
+            match = c.fetchone()
 
-        if match:
-            original_email = match[2]
-            send_notification(original_email, filename)
-            conn.close()
-            os.remove(filepath)  # Don't save duplicate
-            return jsonify({'message': '⚠️ Image already exists! Owner notified.', 'status': 'duplicate'}), 200
+            if match:
+                owner_email = match[2]
+                send_notification(owner_email, filename)
+                os.remove(filepath)
+                return jsonify({'message': f'⚠️ Duplicate image detected. Owner has been notified ({owner_email}).', 'status': 'duplicate'}), 200
 
-        c.execute('INSERT INTO uploads (filename, email, image_hash) VALUES (?, ?, ?)',
-                  (filename, email, img_hash))
-        conn.commit()
-        conn.close()
+            c.execute('INSERT INTO uploads (filename, email, image_hash) VALUES (?, ?, ?)',
+                      (filename, email, image_hash))
+            conn.commit()
 
-        return jsonify({'message': '✅ File uploaded successfully!', 'status': 'new'}), 200
+        return jsonify({'message': '✅ Your image has been successfully uploaded and verified.', 'status': 'new'}), 200
 
     except Exception as e:
-        print(f"❌ Server Error: {e}")
-        return jsonify({'message': '❌ Upload failed due to server error', 'error': str(e)}), 500
+        print(f"❌ Error: {e}")
+        return jsonify({'message': '❌ Server error. Please try again later.', 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
