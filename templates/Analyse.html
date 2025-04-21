@@ -163,7 +163,8 @@ ul li {
         <p>In today’s digital landscape, AI-generated content is becoming increasingly common — making it harder to distinguish between human and machine writing. Our AI Detection system is built to meet this challenge head-on.</p>
             <p>Unlike traditional plagiarism tools that only compare text to known databases, our detection engine dives deeper. It doesn’t just check for matching phrases — it analyzes patterns, language structure, and predictability to flag AI-generated content.</p>
             <p>AI Detection plays a crucial role in maintaining the authenticity of digital content in a world where AI-generated material is becoming increasingly common. By offering a layer of protection against unintentional misuse, it helps ensure that original ideas and genuine effort are recognized and preserved. </p>
-            <img  src="images-Analyse/ai-1.jpeg" alt="Deep scan 1" > <br><br><p><b>Here’s what makes our detection powerful:</b></p>
+            <img src="{{ url_for('static', filename='images-Analyse/ai-1.jpeg') }}" alt="AI 1">
+ <br><br><p><b>Here’s what makes our detection powerful:</b></p>
             <ul>
                 <li>Style Profiling: We evaluate the tone, complexity, and writing flow to assess if it aligns with human behavior.</li>
                 <li>Token Probability Matching: Using models similar to GPT, we analyze the likelihood of each word choice in a sentence.</li>
@@ -171,7 +172,8 @@ ul li {
                 <li>Training Set Overlap Check: We flag content that closely matches AI training outputs, even if rephrased.</li>
             </ul>
             
-            <img class= "img2" src="images-Analyse/ai-2.webp" alt="Deep Scan 2">
+            <img class= img2 src="{{ url_for('static', filename='images-Analyse/ai-2.webp') }}" alt="AI 1">
+
             <p><br><br><br><b>Know what our system is ideal for.</b></p>
             <ul>
                 <li>Educators checking student submissions for originality.</li>
@@ -196,9 +198,10 @@ ul li {
        Deep Scanning is a cutting-edge search and verification technology designed to provide comprehensive, reliable, and highly accurate results by scanning the web and documents at an unparalleled depth. Unlike standard search tools that rely on surface-level data or limited indexes, Deep Scanning goes beyond by exploring the deepest layers of the internet—including dynamic content, behind paywalls (where permissible), forums, archives, academic journals, and user-generated content platforms. It cross-references content across thousands of trusted sources to ensure that results are not only exhaustive but also verifiably authentic.
        
       </p>
-      <img src="images-Analyse/ai-3.jpg" alt="Deep Scan 3" class="img3"><br>
+      <img class= img3 src="{{ url_for('static', filename='images-Analyse/ai-3.jpg') }}" alt="AI 3">
+<br>
     <p>At its core, Deep Scanning leverages advanced algorithms, machine learning, and natural language processing to understand the context and semantics of both search queries and indexed content. This allows it to deliver results that are contextually relevant rather than just keyword-based, ensuring a more meaningful and user-intent driven experience.</p>
-    <img src="images-Analyse/ai-5.jpeg" alt="Deep Scan 3" class="img5">  
+    <img class= img5 src="{{ url_for('static', filename='images-Analyse/ai-5.jpeg') }}" alt="AI 4">  
     <br><br><p>&emsp;&emsp;&emsp;&emsp;One of its most powerful features is authenticity verification. Deep Scanning doesn't just retrieve information—it validates it. Through metadata analysis, source tracing, content fingerprinting, and citation comparison, the system can determine the originality of content, flag duplicates, and identify misinformation or altered data. Whether you're cross-checking the validity of a claim, detecting plagiarism, or ensuring the source of an image or document is legitimate, Deep Scanning provides a multi-layered authentication process that filters out noise and false positives.
       </p>
       <p>&emsp;&emsp;&emsp;&emsp;Furthermore, Deep Scanning supports document-level comparisons across formats—PDFs, Word docs, scanned images (via OCR), and more. It can scan these documents in real-time or batch mode, extract embedded data, and match it against vast databases of online and offline content. This is particularly useful for research professionals, legal teams, publishers, educators, and anyone needing to validate the integrity of a document or track its presence across the web.</p>
@@ -222,7 +225,7 @@ ul li {
       📧 <b>Email Reports: Get Detailed Plagiarism Reports in Your Inbox </b>   </p>
     <p>Email Reports is a powerful and user-friendly feature designed to keep you informed, organized, and in control—without having to log in or manually check results. It delivers comprehensive plagiarism reports straight to your inbox, ensuring you never miss critical insights, no matter where you are or what device you're using.
     </p>
-    <img src="images-Analyse/ai-6.jpeg" alt="DeepScan 5">
+    <img src="{{ url_for('static', filename='images-Analyse/ai-6.jpeg') }}" alt="AI 3">
     <p><br>This feature works in tandem with our advanced plagiarism detection engine, which scans content across billions of web pages, academic repositories, news archives, and private databases. Once a scan is complete, a fully detailed report—highlighting matches, sources, percentages, and authenticity indicators—is automatically compiled and sent to your registered email address.
 </p>
     <p>Each report is designed for clarity and actionability. It not only shows you how much content is potentially duplicated but also identifies exact matches, partial similarities, paraphrased sections, and citation errors. The report includes a link-based breakdown of all matching sources, along with timestamps, risk levels, and suggested next steps for revision or verification.
